@@ -12,6 +12,8 @@ public class Main {
         } catch (TelegramApiException e) {
             e.printStackTrace();
             return;
+        } finally {
+            Neo4jDriver.close();
         }
     }
 
