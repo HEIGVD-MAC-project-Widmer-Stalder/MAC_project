@@ -1,15 +1,41 @@
 import Actions.Action;
 import Actions.ActionsResolver;
 import Actions.DefaultAction;
+import graph_db.Neo4jDriver;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 public class Bot extends TelegramLongPollingBot {
 
     Action currentAction = DefaultAction.DefaultAction();
+
+    private final static String propertyFileName = "telegram_bot.properties";
+
+    String botUsername;
+    String botSecretToken;
+
+    public Bot() throws Exception {
+        Properties prop = new Properties();
+        InputStream inputStream = Neo4jDriver.class.getClassLoader().getResourceAsStream(propertyFileName);
+        try {
+            prop.load(inputStream);
+        } catch (IOException e) {
+            throw new FileNotFoundException("telegram_bot.properties file is missing");
+        }
+        botUsername = prop.getProperty("bot_username");
+        botSecretToken = prop.getProperty("bot_secret_token");
+        if(botUsername == null || botSecretToken == null) {
+            throw new Exception("missing properties in " + propertyFileName + " (maybe a missing bot_username oand bot_secret_token?)");
+        }
+    }
 
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
@@ -26,7 +52,7 @@ public class Bot extends TelegramLongPollingBot {
             currentAction = a;
         }
 
-        // what should be done is delegated to the current ongoing action
+        // The processing of the reply is delegated to the current ongoing action
         SendMessage reply = currentAction.processMessage(message);
         if (reply != null) {
             try {
@@ -41,10 +67,10 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public String getBotUsername() {
-        return "niko_test_bot";
+        return botUsername;
     }
 
     public String getBotToken() {
-        return "995989805:AAFP_phbrvTsA5a5sj3BpUdQmdzO7ZLU5hA";
+        return botSecretToken;
     }
 }
