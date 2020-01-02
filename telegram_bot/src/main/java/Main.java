@@ -14,7 +14,7 @@ public class Main {
             e.printStackTrace();
             return;
         } catch(Exception e){
-
+            e.printStackTrace();
         }
         finally {
             Neo4jDriver.close();

@@ -32,8 +32,8 @@ public class Bot extends TelegramLongPollingBot {
         }
         botUsername = prop.getProperty("bot_username");
         botSecretToken = prop.getProperty("bot_secret_token");
-        if(botUsername == null || botSecretToken == null) {
-            throw new Exception("missing properties in " + propertyFileName + " (maybe a missing bot_username oand bot_secret_token?)");
+        if(botUsername == null || botSecretToken == null || botUsername.equals("") || botSecretToken.equals("")) {
+            throw new Exception("missing properties in " + propertyFileName + " (maybe a missing bot_username and bot_secret_token?)");
         }
     }
 
