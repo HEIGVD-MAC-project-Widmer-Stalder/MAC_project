@@ -3,14 +3,9 @@ package Actions;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-public class SimpleGame implements Action {
+public class SimpleGame extends Action {
 
-    private boolean onGoing = true;
     private int secret = (int)(Math.random() * 100) + 1;
-
-    public boolean onGoing() {
-        return onGoing;
-    }
 
     public SendMessage processMessage(Message message) {
         String s = message.getText();
@@ -25,7 +20,7 @@ public class SimpleGame implements Action {
                 } else if (n > secret) {
                     return reply.setText("too big");
                 } else {
-                    onGoing = false;
+                    setActionAsCompleted();
                     return reply.setText("you won");
                 }
             } catch (NumberFormatException e) {

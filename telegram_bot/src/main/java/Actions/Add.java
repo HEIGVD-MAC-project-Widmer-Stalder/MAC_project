@@ -1,30 +1,23 @@
 package Actions;
 
-import graph_db.Neo4jDriver;
+import graph_db.Neo4jUtils;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.neo4j.driver.v1.AccessMode;
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.Session;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import static org.neo4j.driver.v1.Values.parameters;
 
-public class Add implements Action {
+public class Add extends Action {
 
-    private boolean onGoing = true;
     UrlValidator urlValidator = new UrlValidator();
 
-    public boolean onGoing() {
-        return onGoing;
-    }
-
     public SendMessage processMessage(Message message) {
+        SendMessage reply =  new SendMessage().setChatId(message.getChatId());
         String s = message.getText();
-        SendMessage reply = new SendMessage().setChatId(message.getChatId());
+        String[] tokens = s.split("\\s+");
 
         // if the user just typed the command linked to this action
-        if(s.contains("/add")) {
+        if(tokens.length >= 1 && tokens[0].equals("/add")) {
             return reply.setText("enter the url of the document");
         }
         else {
@@ -32,13 +25,11 @@ public class Add implements Action {
             if(urlValidator.isValid(s)) {
                 // try to add the document to the db
                 try{
-                    Driver d = Neo4jDriver.getDriver();
-                    Session session = d.session(AccessMode.WRITE);
-                    session.run("CREATE (document1:document {url: $url} )", parameters("url", s));
-                    onGoing = false;
+                    Neo4jUtils.writingQuery("CREATE (document1:document {url: $url} )", parameters("url", s));
+                    setActionAsCompleted();
                     return reply.setText("document was added");
                 } catch (Exception e) {
-                    onGoing = false;
+                    setActionAsCompleted();
                     return reply.setText("an error occurred when trying to add the document. " +
                             "we are sorry for the inconvenience.");
                 }

@@ -3,17 +3,12 @@ package Actions;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-public class DefaultAction extends Action {
-
-    private static DefaultAction da = new DefaultAction();
-
-    private DefaultAction(){}
-
-    public static DefaultAction DefaultAction() {
-        return da;
-    }
+public class GetDocsByTags extends Action {
 
     public SendMessage processMessage(Message message) {
+        String s = message.getText();
+        SendMessage reply = new SendMessage().setChatId(message.getChatId());
+        //TODO
         return null;
     }
 }

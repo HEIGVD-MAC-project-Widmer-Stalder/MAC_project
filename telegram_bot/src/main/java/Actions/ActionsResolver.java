@@ -15,6 +15,8 @@ public class ActionsResolver {
                 action = DefaultAction.DefaultAction();
             } else if (s.equals("/simple_game")) {
                 action = new SimpleGame();
+            } else if (s.equals("/like")) {
+                action = new Like();
             }
         }
 
