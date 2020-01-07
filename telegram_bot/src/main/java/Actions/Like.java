@@ -27,13 +27,13 @@ public class Like extends Action {
                         "MERGE (document1:document {url: $url})\n" +
                         "CREATE (user1)-[:LIKE{coefficient: $coef}]->(document1)",
                         parameters("id", message.getFrom().getId(), "url", tokens[0],
-                                "coef", 1)); //TODO
+                                "coef", 1)); //TODO replace 1 with more appropriate value
                 setActionAsCompleted();
                 return reply.setText("document was liked");
             } catch (Exception e) {
                 setActionAsCompleted();
                 return reply.setText("an error occurred when trying to like the document. " +
-                        "we are sorry for the inconvenience.");
+                        "we are sorry for the inconvenience." + e.getMessage()); //TODO remove the debugging log
             }
         }
     }
