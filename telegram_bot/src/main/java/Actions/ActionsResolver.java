@@ -9,6 +9,7 @@ public class ActionsResolver {
 
         String s = message.getText();
         if (s.charAt(0) == '/') {
+            //defines actions keywords
             if (s.equals("/add")) {
                 action = new Add();
             } else if (s.equals("/stop")) {

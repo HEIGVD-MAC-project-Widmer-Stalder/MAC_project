@@ -11,11 +11,14 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Properties;
 
 public class Bot extends TelegramLongPollingBot {
 
-    Action currentAction = DefaultAction.DefaultAction();
+    HashMap<Long, Action> chatCurrentAction = new HashMap<Long, Action>();
+
+    //Action currentAction = DefaultAction.DefaultAction();
 
     private final static String propertyFileName = "telegram_bot.properties";
 
@@ -23,6 +26,7 @@ public class Bot extends TelegramLongPollingBot {
     String botSecretToken;
 
     public Bot() throws Exception {
+        // Configure the bot and the neo4j driver according to properties files
         Properties prop = new Properties();
         InputStream inputStream = Neo4jDriver.class.getClassLoader().getResourceAsStream(propertyFileName);
         try {
@@ -49,10 +53,12 @@ public class Bot extends TelegramLongPollingBot {
         // if the message aims to start a new action, we change currentAction accordingly
         Action a = ActionsResolver.getAction(message);
         if (a != null) {
-            currentAction = a;
+            chatCurrentAction.put(message.getChatId(), a);
         }
 
         // The processing of the reply is delegated to the current ongoing action
+        Action currentAction = chatCurrentAction.get(message.getChatId());
+        currentAction = currentAction != null ? currentAction : DefaultAction.DefaultAction();
         SendMessage reply = currentAction.processMessage(message);
         if (reply != null) {
             try {

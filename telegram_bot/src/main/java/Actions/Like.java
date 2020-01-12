@@ -33,7 +33,7 @@ public class Like extends Action {
             } catch (Exception e) {
                 setActionAsCompleted();
                 return reply.setText("an error occurred when trying to like the document. " +
-                        "we are sorry for the inconvenience." + e.getMessage()); //TODO remove the debugging log
+                        "we are sorry for the inconvenience.");
             }
         }
     }
