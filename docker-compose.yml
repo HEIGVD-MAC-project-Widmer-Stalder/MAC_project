@@ -1,0 +1,35 @@
+version: '3'
+
+volumes:
+  neo4j-data:
+  neo4j-import:
+  neo4j-plugins:
+
+services:
+  neo4j:
+    image: neo4j:latest 
+    container_name: "neo4j"
+    hostname: neo4j
+    restart: always
+    ports:
+      - "7474:7474"
+   #  - "7687:7687"
+    environment:
+      - NEO4J_AUTH="neo4j/test"
+    volumes:
+      - neo4j-data:/data
+      - neo4j-import:/var/lib/neo4j/import
+      - neo4j-plugins:/plugins
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile-bot
+    container_name: bot
+    hostname: bot
+    restart: always
+    volumes:
+      - ./telegram_bot:/app
+    environment:
+      - BOT_USERNAME="MAC_2019_BestBot"
+      - BOT_SECRET_TOKEN="1053463342:AAFbTV0bR5gDVL3AcWtZm1W9AZW5BHfrZb8"
+    working_dir: /app
