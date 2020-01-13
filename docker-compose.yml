@@ -22,8 +22,9 @@ services:
       - neo4j-import:/var/lib/neo4j/import
       - neo4j-plugins:/plugins
   bot:
-    build: .
-    dockerfile: Dockerfile-bot
+    build:
+      context: .
+      dockerfile: Dockerfile-bot
     container_name: bot
     hostname: bot
     restart: always
