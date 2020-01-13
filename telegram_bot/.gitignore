@@ -1,3 +1,7 @@
 .idea
 *.iml
 target/
+
+
+src/main/resources/telegram_bot.properties
+src/main/resources/neo4j.properties
