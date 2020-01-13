@@ -28,4 +28,5 @@ services:
     restart: always
     volumes:
       - ./telegram_bot:/app
-    command: "cd /app; mvn clean install; cd target; java -jar telegram-bot-experiment-1.0-SNAPSHOT-jar-with-dependencies.jar"
+    workdir: /app
+    command: "mvn clean install; java -jar target/telegram-bot-experiment-1.0-SNAPSHOT-jar-with-dependencies.jar"
