@@ -1,0 +1,7 @@
+version: '2'
+services:
+  web:
+    build: .
+    hostname: web-1.hello-world.test.kontena.local
+    ports:
+      - "9292:9292"
