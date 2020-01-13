@@ -21,3 +21,11 @@ services:
       - neo4j-data:/data
       - neo4j-import:/var/lib/neo4j/import
       - neo4j-plugins:/plugins
+  bot:
+    image: maven:3.3-jdk-8
+    container_name: bot
+    hostname: bot
+    restart: always
+    volumes:
+      - ./telegram_bot:/app
+    command: "cd /app; mvn clean install; cd target; java -jar telegram-bot-experiment-1.0-SNAPSHOT-jar-with-dependencies.jar"
