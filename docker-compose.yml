@@ -22,7 +22,8 @@ services:
       - neo4j-import:/var/lib/neo4j/import
       - neo4j-plugins:/plugins
   bot:
-    image: maven:3.3-jdk-8
+    build: .
+    dockerfile: Dockerfile-bot
     container_name: bot
     hostname: bot
     restart: always
@@ -30,4 +31,4 @@ services:
       - ./telegram_bot:/app
     working_dir: /app
     #command: "mvn clean install; java -jar target/telegram-bot-experiment-1.0-SNAPSHOT-jar-with-dependencies.jar"
-    command: "mvn clean install"
+    #command: "mvn clean install"
