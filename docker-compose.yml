@@ -7,14 +7,13 @@ volumes:
 
 services:
   neo4j:
-#    build: .
     image: neo4j:latest 
     container_name: "neo4j"
     hostname: neo4j
     restart: always
     ports:
       - "7474:7474"
-      - "7687:7687"
+   #  - "7687:7687"
     environment:
       - NEO4J_AUTH="neo4j/test"
     volumes:
@@ -30,6 +29,7 @@ services:
     restart: always
     volumes:
       - ./telegram_bot:/app
+    environment:
+      - BOT_USERNAME="MAC_2019_BestBot"
+      - BOT_TOKEN="1053463342:AAE2ZhrJ5my4EgJrYDdy2HiU8jArzTIqUCY"
     working_dir: /app
-    #command: "mvn clean install; java -jar target/telegram-bot-experiment-1.0-SNAPSHOT-jar-with-dependencies.jar"
-    #command: "mvn clean install"
