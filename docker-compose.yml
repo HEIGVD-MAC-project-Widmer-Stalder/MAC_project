@@ -12,11 +12,11 @@ services:
     container_name: neo4j
     restart: always
     ports:
-      - 7474: 7474
-      - 7687: 7687
+      - 7474:7474
+      - 7687:7687
     environment:
       - NEO4J_AUTH: neo4j/test
     volumes:
-      - neo4j_data: /data
-      - neo4j_import: /var/lib/neo4j/import
-      - neo4j_plugins: /plugins
+      - neo4j_data:/data
+      - neo4j_import:/var/lib/neo4j/import
+      - neo4j_plugins:/plugins
