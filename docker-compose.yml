@@ -31,5 +31,5 @@ services:
       - ./telegram_bot:/app
     environment:
       - BOT_USERNAME="MAC_2019_BestBot"
-      - BOT_SECRET_TOKEN="1053463342:AAE2ZhrJ5my4EgJrYDdy2HiU8jArzTIqUCY"
+      - BOT_SECRET_TOKEN="1053463342:AAFbTV0bR5gDVL3AcWtZm1W9AZW5BHfrZb8"
     working_dir: /app
