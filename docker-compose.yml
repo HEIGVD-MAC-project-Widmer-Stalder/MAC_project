@@ -29,4 +29,5 @@ services:
     volumes:
       - ./telegram_bot:/app
     working_dir: /app
-    command: "mvn clean install; java -jar target/telegram-bot-experiment-1.0-SNAPSHOT-jar-with-dependencies.jar"
+    #command: "mvn clean install; java -jar target/telegram-bot-experiment-1.0-SNAPSHOT-jar-with-dependencies.jar"
+    command: "mvn clean install"
