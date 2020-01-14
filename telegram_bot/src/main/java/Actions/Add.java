@@ -16,8 +16,11 @@ public class Add extends Action {
         String s = message.getText();
         String[] tokens = s.split("\\s+");
 
+        // if the message is blank or empty we reply nothing
+        if(tokens.length < 1) return null;
+
         // if the user just typed the command linked to this action
-        if(tokens.length >= 1 && tokens[0].equals("/add")) {
+        if(tokens[0].equals("/add")) {
             return reply.setText("enter the url of the document");
         }
         else {
@@ -29,6 +32,7 @@ public class Add extends Action {
                     setActionAsCompleted();
                     return reply.setText("document was added");
                 } catch (Exception e) {
+                    e.printStackTrace();
                     setActionAsCompleted();
                     return reply.setText("an error occurred when trying to add the document. " +
                             "we are sorry for the inconvenience.");
