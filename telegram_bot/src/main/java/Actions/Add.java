@@ -28,7 +28,7 @@ public class Add extends Action {
             if(urlValidator.isValid(s)) {
                 // try to add the document to the db
                 try{
-                    Neo4jUtils.writingQuery("CREATE (document1:document {url: $url} )", parameters("url", s));
+                    Neo4jUtils.writingQuery("CREATE (document1:Document {url: $url} )", parameters("url", s));
                     setActionAsCompleted();
                     return reply.setText("document was added");
                 } catch (Exception e) {

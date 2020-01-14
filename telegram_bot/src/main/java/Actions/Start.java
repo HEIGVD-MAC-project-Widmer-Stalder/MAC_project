@@ -16,7 +16,7 @@ public class Start extends Action {
         String username = u.getUserName();
 
         try {
-            Neo4jUtils.writingQuery("CREATE (new_user:User{telegramId: $id, username: $username})",
+            Neo4jUtils.writingQuery("MERGE (user:User{telegramId: $id, username: $username})",
                     parameters("id", id, "username", username));
             setActionAsCompleted();
         } catch (Exception e) {

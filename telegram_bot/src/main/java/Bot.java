@@ -41,12 +41,38 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * This method is automatically called when we receive an update
+     * @param update may contain a message of other stuff
+     */
     public void onUpdateReceived(Update update) {
+        // if the update is about a non empty message
         if (update.hasMessage() && update.getMessage().hasText()) {
+            // take appropriate action
             manageMessages(update.getMessage());
         }
     }
 
+    /**
+     * (Method needed to extends TelegramBot)
+     * @return the unsername of the bor
+     */
+    public String getBotUsername() {
+        return botUsername;
+    }
+
+    /**
+     * (Method needed to extends TelegramBot)
+     * @return the telegram secret token needed to control the bot
+     */
+    public String getBotToken() {
+        return botSecretToken;
+    }
+
+    /**
+     *
+     * @param message
+     */
     public void manageMessages(Message message) {
         System.out.println(message.getText());
 
@@ -68,15 +94,7 @@ public class Bot extends TelegramLongPollingBot {
             }
         }
 
-        if(!currentAction.onGoing()) currentAction = DefaultAction.DefaultAction();
+        if(!currentAction.onGoing()) chatCurrentAction.put(message.getChatId(), DefaultAction.DefaultAction());
 
-    }
-
-    public String getBotUsername() {
-        return botUsername;
-    }
-
-    public String getBotToken() {
-        return botSecretToken;
     }
 }

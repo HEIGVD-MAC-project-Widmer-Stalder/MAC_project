@@ -6,8 +6,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class Main {
 
     public static void main(String[] args) {
+        // initialize telegram stuff
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
+
+        // register our bot
         try{
             telegramBotsApi.registerBot(new Bot());
         } catch (TelegramApiException e) {
@@ -17,6 +20,7 @@ public class Main {
             e.printStackTrace();
         }
         finally {
+            // closes the neo4j connection if needed
             Neo4jDriver.close();
         }
     }

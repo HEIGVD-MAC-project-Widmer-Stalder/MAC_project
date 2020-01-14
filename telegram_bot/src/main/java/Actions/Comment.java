@@ -1,37 +1,60 @@
 package Actions;
 
+import graph_db.Neo4jUtils;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import static org.neo4j.driver.v1.Values.parameters;
+
 public class Comment extends Action {
 
-    public SendMessage processMessage(Message message) {
-        SendMessage reply =  new SendMessage().setChatId(message.getChatId());
-        String s = message.getText();
-        String[] tokens = s.split("\\s+");
+    UrlValidator urlValidator = new UrlValidator();
 
-        // if the message is blank or empty we reply nothing
-        if(tokens.length < 1) return null;
+    // states of the state machine
+    private enum Stages {BEGINNING, WAITURL, WAITCOMMENT};
+
+    private Stages stage = Stages.BEGINNING;
+
+    private Integer id;
+    private String url;
+    private String comment;
+
+    public SendMessage processMessage(Message message) {
+        SendMessage reply = new SendMessage().setChatId(message.getChatId());
+        String s = message.getText();
 
         // if the user just typed the command linked to this action
-        // TODO: 2 add your command in ActionsResolver.java so that the bot knows this command exists
-        if(tokens[0].equals("/comment")) {
-            return reply.setText("enter the url of the document");
-        }
-        else {
+        if (s.equals("/comment")) {
+            stage = Stages.WAITURL;
+            id = message.getFrom().getId();
+            return reply.setText("enter the URL of the document");
+        } else if (stage == Stages.WAITURL) {
+            url = s;
+            if (!urlValidator.isValid(url)) {
+                return reply.setText("URL is not valid. Please enter again.");
+            }
+            stage = Stages.WAITCOMMENT;
+            return reply.setText("Enter the comment (on PCs, use shift+Enter for newlines)");
+        } else if (stage == Stages.WAITCOMMENT) {
+            comment = s;
             try {
-                // TODO: 3 take appropriate action (example add a new document is the database)
-                //Neo4jUtils.writingQuery("CREATE (document1:document {url: $url} )", parameters("url", s));
-
+                Neo4jUtils.writingQuery("MATCH (user:User {telegramId: $id})\n" +
+                                "MERGE (document:Document {url: $url})\n" +
+                                "CREATE (user)-[:COMMENTED {comment: $comment}]->(document)",
+                        parameters("id", (int) id, "url", url, "comment", comment));
                 setActionAsCompleted(); // used to tell this action finished and do not have further steps
                 return reply.setText("action has been completed"); // reply returned to the user
             } catch (Exception e) {
                 e.printStackTrace();
                 setActionAsCompleted();
-                return reply.setText("an error occurred when trying to add the document. " +
-                        "we are sorry for the inconvenience.");
+                return reply.setText("an error occurred. " +
+                        "we are sorry for the inconvenience. (maybe try /start and try again)");
             }
         }
+        // we should never reach this point
+        new Exception("Invalid state value").printStackTrace();
+        return reply.setText("an error occured;");
     }
 
 }

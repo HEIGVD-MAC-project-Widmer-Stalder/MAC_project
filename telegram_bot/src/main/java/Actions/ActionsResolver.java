@@ -10,10 +10,12 @@ public class ActionsResolver {
 
     static {
         // defines mapping between commands and actinos
-        actions.put("/add", Add.class);
-        actions.put("/comment", Comment.class);
-        actions.put("/simple_game", SimpleGame.class);
         actions.put("/start", Start.class);
+        actions.put("/add", Add.class);
+        actions.put("/simple_game", SimpleGame.class);
+        actions.put("/like", Like.class);
+        actions.put("/comment", Comment.class);
+        actions.put("/tag", Tag.class);
     }
 
     public static Action getAction(Message message) {
@@ -21,7 +23,7 @@ public class ActionsResolver {
 
         String s = message.getText();
         if (s.charAt(0) == '/') {
-            if(s.equals("/stop")) {
+            if(s.equals("/cancel")) {
                 action = DefaultAction.DefaultAction();
             }
             else {

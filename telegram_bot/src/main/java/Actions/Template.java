@@ -19,14 +19,15 @@ public class Template extends Action {
 
         // if the user just typed the command linked to this action
         // TODO: 1 replace /template with your command
-        // TODO: 2 add your command in ActionsResolver.java so that the bot knows this command exists
+        // TODO: 2 add your command in ActionsResolver.java (so that the bot knows this command exists and maps it)
         if(tokens[0].equals("/template")) {
             return reply.setText("enter the url of the document");
         }
         else {
             try {
                 // TODO: 3 take appropriate action (example add a new document is the database)
-                //Neo4jUtils.writingQuery("CREATE (document1:document {url: $url} )", parameters("url", s));
+                //String url = tokens[0];
+                //Neo4jUtils.writingQuery("CREATE (document1:Document {url: $url} )", parameters("url", s));
                 // TODO: 4 replace replies messages with custom ones if needed
 
                 setActionAsCompleted(); // used to tell this action finished and do not have further steps
