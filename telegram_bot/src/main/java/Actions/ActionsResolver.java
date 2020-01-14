@@ -17,6 +17,7 @@ public class ActionsResolver {
         actions.put("/comment", Comment.class);
         actions.put("/tag", Tag.class);
         actions.put("/info", Info.class);
+        actions.put("/users", Users.class);
     }
 
     public static Action getAction(Message message) {

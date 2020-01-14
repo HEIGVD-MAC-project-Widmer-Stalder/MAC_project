@@ -51,7 +51,7 @@ public class Info extends Action {
     public SendMessage processMessage(Message message) {
         // the reply we'll send to the user
         SendMessage reply = new SendMessage().setChatId(message.getChatId());
-        return reply.setText("Compile time of Info.java class: " + buildDate.toString());
+        return reply.setText("Compile time: " + buildDate.toString());
     }
 
 }

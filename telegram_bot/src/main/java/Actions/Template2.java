@@ -3,7 +3,7 @@ package Actions;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-public class User extends Action {
+public class Template2 extends Action {
 
     private enum State {BEGINNING, STEP1, END}
 

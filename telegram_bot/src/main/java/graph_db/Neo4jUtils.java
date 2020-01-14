@@ -24,11 +24,25 @@ public class Neo4jUtils {
         return writingSession.run(query, values);
     }
 
+    public static StatementResult writingQuery(String query) throws Exception {
+        if(writingSession == null) {
+            throw new Exception("cannot communicate with db since we failed to create a session");
+        }
+        return writingSession.run(query);
+    }
+
     public static StatementResult readingQuery(String query, Value values) throws Exception {
         if(readingSession == null) {
             throw new Exception("cannot communicate with db since we failed to create a session");
         }
         return readingSession.run(query, values);
+    }
+
+    public static StatementResult readingQuery(String query) throws Exception {
+        if(readingSession == null) {
+            throw new Exception("cannot communicate with db since we failed to create a session");
+        }
+        return readingSession.run(query);
     }
 
 }
