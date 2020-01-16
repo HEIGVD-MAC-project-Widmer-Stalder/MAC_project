@@ -20,7 +20,8 @@ public class Main {
             e.printStackTrace();
         }
         finally {
-            // closes the neo4j connection if needed
+            // closes the neo4j connection if needed (we don't need to initialize it but we need to close it in case
+            // it was used at least once)
             Neo4jDriver.close();
         }
     }

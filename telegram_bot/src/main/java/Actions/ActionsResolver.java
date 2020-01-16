@@ -22,7 +22,9 @@ public class ActionsResolver {
         actions.put("/documents", Documents.class);
         actions.put("/user", User.class);
         actions.put("/get_users_by_tag", GetUsersByTag.class);
+        actions.put("/most_frequent_contradictor", MostFrequentContradictor.class);
         actions.put("/most_personal_contradictor", MostPersonalContradictor.class);
+        actions.put("/curious_fact1", CuriousFact1.class);
     }
 
     public static Action getAction(Message message) {

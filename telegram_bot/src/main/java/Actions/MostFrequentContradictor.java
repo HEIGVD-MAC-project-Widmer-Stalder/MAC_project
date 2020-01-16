@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import static org.neo4j.driver.v1.Values.parameters;
 
-public class MostPersonalContradictor extends Action {
+public class MostFrequentContradictor extends Action {
 
     private enum State {BEGINNING, STEP1, END}
 
@@ -38,21 +38,16 @@ public class MostPersonalContradictor extends Action {
                     String username = tokens[0];
                     StatementResult sr = Neo4jUtils.writingQuery("MATCH (user:User{username:$username})-[lu:LIKED]->(d:Document)\n" +
                             "MATCH (other_user:User)-[lou:LIKED]->(d)\n" +
-                            "WHERE user <> other_user AND lou.coef <> lu.coef\n" +
-                            "MATCH (user)-[lu2:LIKED]->(d2:Document)\n" +
-                            "MATCH (other_user)-[lou2:LIKED]->(d2)\n" +
-                            "WHERE user <> other_user AND lu2.coef = lou2.coef\n" +
-                            "WITH other_user, COUNT(lou) AS unsim_likes , COUNT(lou2) AS sim_likes\n" +
-                            "WHERE unsim_likes >= 3 AND sim_likes > 0\n" +
-                            "RETURN other_user, unsim_likes / sim_likes as dislikeness\n" +
-                            "ORDER BY dislikeness", parameters("username", username));
+                            "WHERE lu.coef<>lou.coef\n" +
+                            "return other_user, count(other_user) as diff\n" +
+                            "ORDER BY diff", parameters("username", username));
                     // we put result in the reply and return it
                     StringBuilder sb = new StringBuilder();
                     while(sr.hasNext()){
                         Record r = sr.next();
                         Value _username = r.get(0).get("username");
-                        Value _disaffinity = r.get(1);
-                        sb.append(_username.asString()).append(" (disagreement ratio: ").append(_disaffinity.asInt())
+                        Value __disaffinity = r.get(1);
+                        sb.append(_username.asString()).append(" (# of disagreements: ").append(__disaffinity.asInt())
                                 .append(")\n");
                     }
                     state = State.END; // used to tell the action finished and do not have further steps

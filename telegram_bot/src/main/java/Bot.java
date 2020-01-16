@@ -16,19 +16,18 @@ import java.util.Properties;
 
 public class Bot extends TelegramLongPollingBot {
 
-    HashMap<Long, Action> chatCurrentAction = new HashMap<Long, Action>();
-
-    //Action currentAction = DefaultAction.DefaultAction();
+    // stores the ongoing action for each chat (Long is for chatId)
+    private HashMap<Long, Action> chatCurrentAction = new HashMap<Long, Action>();
 
     private final static String propertyFileName = "telegram_bot.properties";
 
-    String botUsername;
-    String botSecretToken;
+    private String botUsername;
+    private String botSecretToken;
 
     public Bot() throws Exception {
-        // Configure the bot and the neo4j driver according to properties files
+        // Configure the bot according to properties files
         Properties prop = new Properties();
-        InputStream inputStream = Neo4jDriver.class.getClassLoader().getResourceAsStream(propertyFileName);
+        InputStream inputStream = Bot.class.getClassLoader().getResourceAsStream(propertyFileName);
         try {
             prop.load(inputStream);
         } catch (IOException e) {
@@ -70,7 +69,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     /**
-     *
+     * here is decided which action will be taken for messages
      * @param message
      */
     public void manageMessages(Message message) {
@@ -94,6 +93,7 @@ public class Bot extends TelegramLongPollingBot {
             }
         }
 
+        // When an action is no more ongoing, we replace it with a default action
         if(!currentAction.onGoing()) chatCurrentAction.put(message.getChatId(), DefaultAction.DefaultAction());
 
     }
