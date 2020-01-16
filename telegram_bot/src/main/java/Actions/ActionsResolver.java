@@ -18,6 +18,11 @@ public class ActionsResolver {
         actions.put("/tag", Tag.class);
         actions.put("/info", Info.class);
         actions.put("/users", Users.class);
+        actions.put("/tags", Tags.class);
+        actions.put("/documents", Documents.class);
+        actions.put("/user", User.class);
+        actions.put("/get_users_by_tag", GetUsersByTag.class);
+        actions.put("/most_personal_contradictor", MostPersonalContradictor.class);
     }
 
     public static Action getAction(Message message) {

@@ -1,7 +1,12 @@
 package Actions;
 
+import graph_db.Neo4jUtils;
+import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.Value;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+
+import static org.neo4j.driver.v1.Values.parameters;
 
 public class User extends Action {
 
@@ -13,10 +18,6 @@ public class User extends Action {
 
         // we extract tokens from the message sent by the user
         String s = message.getText();
-        String[] tokens = s.split("\\s+");
-
-        // if the message is blank or empty we reply nothing
-        if (tokens.length < 1) return null;
 
         // the reply we'll send to the user
         SendMessage reply = new SendMessage().setChatId(message.getChatId());
@@ -25,23 +26,34 @@ public class User extends Action {
             switch (state) {
                 case BEGINNING:
                     state = State.STEP1;
-                    // TODO 1 replace with your custom text
-                    return reply.setText("enter the url of the document");
+                    return reply.setText("enter the username of the user");
                 case STEP1:
-                    // TODO: 2 take appropriate action (example add a new document is the database)
-                    //String url = tokens[0];
-                    //Neo4jUtils.writingQuery("CREATE (document1:Document {url: $url} )", parameters("url", s));
-                    state = State.END; // used to tell the action finished and do not have further steps
-                    return reply.setText("action applied successfully");
+                    String username = s;
+                    StatementResult sr = Neo4jUtils.readingQuery("MATCH (u:User{username:$username})",
+                            parameters("username", username));
+                    if(!sr.hasNext()) {
+                        return reply.setText("This user does not exist");
+                    }
+                    sr = Neo4jUtils.readingQuery("MATCH (u:User{username: $username})-[:LIKED{coef: 1}]->(d:Document)\n" +
+                            "MATCH (:User)-[t:TAGGED]->(d)\n" +
+                            "RETURN DISTINCT t.label", parameters("username", username));
+                    // we retrieve each result and put it in the reply
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(username).append('\n').append("Tags associated with liked documents:\n");
+                    while (sr.hasNext()){
+                        Value tag = sr.next().get(0);
+                        String str = tag.asString();
+                        sb.append(str).append('\n');
+                    }
+                    state = State.END; // used to tell the action finished and does not have further steps
+                    return reply.setText(sb.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
             state = State.END;
-            return reply.setText("an error occurred when trying to add the document. " +
+            return reply.setText("an error occurred. " +
                     "we are sorry for the inconvenience.");
         }
-
-        // TODO: 3 add your command in ActionsResolver.java (so that the bot knows this command exists and maps it)
 
         // we should never reach this point
         new Error("this action should not have been used").printStackTrace();

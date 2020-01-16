@@ -27,10 +27,11 @@ public class Users extends Action {
         // if the user just typed the command linked to this action
         if(tokens[0].equals("/users")) {
             try {
-                StatementResult results = Neo4jUtils.readingQuery("MATCH (user:User) return user");
+                StatementResult results = Neo4jUtils.readingQuery("MATCH (user:User)\n" +
+                        "RETURN user\n" +
+                        "LIMIT 50");
                 StringBuilder sb = new StringBuilder();
-                int i = 0;
-                while (results.hasNext() && i++ < 50){
+                while (results.hasNext()){
                     Value a = results.next().get("user");
                     Value b = a.get("username");
                     String str = b.asString();
@@ -42,7 +43,7 @@ public class Users extends Action {
             } catch (Exception e) {
                 e.printStackTrace();
                 setActionAsCompleted();
-                return reply.setText("an error occurred when trying to add the document. " +
+                return reply.setText("an error occurred." +
                         "we are sorry for the inconvenience.");
             }
 

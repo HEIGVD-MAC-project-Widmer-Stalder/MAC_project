@@ -1,9 +1,13 @@
 package Actions;
 
+import graph_db.Neo4jUtils;
+import org.neo4j.driver.v1.StatementResult;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-public class Template2 extends Action {
+import static org.neo4j.driver.v1.Values.parameters;
+
+public class MostPersonalContradictor extends Action {
 
     private enum State {BEGINNING, STEP1, END}
 
@@ -27,14 +31,22 @@ public class Template2 extends Action {
             switch (state) {
                 case BEGINNING:
                     state = State.STEP1;
-                    // TODO 1 replace with your custom text
-                    return reply.setText("enter the url of the document");
+                    return reply.setText("enter the username of the user");
                 case STEP1:
-                    // TODO: 2 take appropriate action (example add a new document is the database)
-                    //String url = tokens[0];
-                    //Neo4jUtils.writingQuery("CREATE (document1:Document {url: $url} )", parameters("url", url));
+                    String username = tokens[0];
+                    // TODO change this query (should be more sophisticated)
+                    StatementResult sr = Neo4jUtils.writingQuery("MATCH (user:User{username:'username'})-[lu:LIKED]->(d:Document)\n" +
+                            "MATCH (other_user:User)-[lou:LIKED]->(d)\n" +
+                            "WHERE lu.coef<>lou.coef\n" +
+                            "return other_user, count(other_user) as diff\n" +
+                            "ORDER BY diff", parameters("username", username));
+                    // we put result in the reply and return it
+                    StringBuilder sb = new StringBuilder();
+                    while(sr.hasNext()){
+                        sb.append(sr.next().get(0).get("username").asString()).append('\n');
+                    }
                     state = State.END; // used to tell the action finished and do not have further steps
-                    return reply.setText("action applied successfully");
+                    return reply.setText(sb.toString());
             }
         } catch (Exception e) {
             // something when wrong: we tell the user and print some logging
@@ -43,8 +55,6 @@ public class Template2 extends Action {
             return reply.setText("an error occurred." +
                     "we are sorry for the inconvenience.");
         }
-
-        // TODO: 3 add your command in ActionsResolver.java (so that the bot knows this command exists and maps it)
 
         // we should never reach this point
         new Error("this action should not have been used").printStackTrace();
