@@ -14,7 +14,7 @@ public class Tags extends Action {
         SendMessage reply = new SendMessage().setChatId(message.getChatId());
         setActionAsCompleted();
         try {
-            StatementResult results = Neo4jUtils.readingQuery("MATCH ()-[t:TAGGED]-()\n" +
+            StatementResult results = Neo4jUtils.readingQuery("MATCH ()-[t:TAGGED]->()\n" +
                     "RETURN DISTINCT t.label, count(*)\n" +
                     "LIMIT 50");
             StringBuilder sb = new StringBuilder();
