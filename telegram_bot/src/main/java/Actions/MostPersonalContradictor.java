@@ -1,7 +1,9 @@
 package Actions;
 
 import graph_db.Neo4jUtils;
+import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.Value;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -35,7 +37,7 @@ public class MostPersonalContradictor extends Action {
                 case STEP1:
                     String username = tokens[0];
                     // TODO change this query (should be more sophisticated)
-                    StatementResult sr = Neo4jUtils.writingQuery("MATCH (user:User{username:'username'})-[lu:LIKED]->(d:Document)\n" +
+                    StatementResult sr = Neo4jUtils.writingQuery("MATCH (user:User{username:$username})-[lu:LIKED]->(d:Document)\n" +
                             "MATCH (other_user:User)-[lou:LIKED]->(d)\n" +
                             "WHERE lu.coef<>lou.coef\n" +
                             "return other_user, count(other_user) as diff\n" +
@@ -43,7 +45,11 @@ public class MostPersonalContradictor extends Action {
                     // we put result in the reply and return it
                     StringBuilder sb = new StringBuilder();
                     while(sr.hasNext()){
-                        sb.append(sr.next().get(0).get("username").asString()).append('\n');
+                        Record r = sr.next();
+                        Value _username = r.get(0).get("username");
+                        Value __disaffinity = r.get(1);
+                        sb.append(_username.asString()).append(" (# of disagreements: ").append(__disaffinity.asInt())
+                                .append(")\n");
                     }
                     state = State.END; // used to tell the action finished and do not have further steps
                     return reply.setText(sb.toString());
