@@ -1,6 +1,7 @@
 package Actions;
 
 import graph_db.Neo4jUtils;
+import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.Value;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -42,9 +43,23 @@ public class User extends Action {
                     StringBuilder sb = new StringBuilder();
                     sb.append(username).append('\n').append("Tags associated with liked documents:\n");
                     while (sr.hasNext()){
-                        Value tag = sr.next().get(0);
+                        Record r = sr.next();
+                        Value tag = r.get(0);
+                        Value nbrOfTimesLiked = r.get(1);
                         String str = tag.asString();
-                        sb.append(str).append('\n');
+                        sb.append(str).append("  (count: ").append(nbrOfTimesLiked).append(")\n");
+                    }
+                    sr = Neo4jUtils.readingQuery("MATCH (u:User{username: 'user2'})-[:LIKED{coef: -1}]->(d:Document)\n" +
+                            "MATCH (:User)-[t:TAGGED]->(d)\n" +
+                            "RETURN DISTINCT t.label, count(*) as c", parameters("username", username));
+                    // we retrieve each result and put it in the reply
+                    sb.append('\n').append("Tags associated with disliked documents:\n");
+                    while (sr.hasNext()){
+                        Record r = sr.next();
+                        Value tag = r.get(0);
+                        Value nbrOfTimesLiked = r.get(1);
+                        String str = tag.asString();
+                        sb.append(str).append("  (count: ").append(nbrOfTimesLiked).append(")\n");
                     }
                     state = State.END; // used to tell the action finished and does not have further steps
                     return reply.setText(sb.toString());
