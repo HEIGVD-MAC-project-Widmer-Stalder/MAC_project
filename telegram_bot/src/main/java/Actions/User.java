@@ -29,7 +29,8 @@ public class User extends Action {
                     return reply.setText("enter the username of the user");
                 case STEP1:
                     String username = s;
-                    StatementResult sr = Neo4jUtils.readingQuery("MATCH (u:User{username:$username})",
+                    StatementResult sr = Neo4jUtils.readingQuery("MATCH (u:User{username:$username})\n" +
+                                    "RETURN u",
                             parameters("username", username));
                     if(!sr.hasNext()) {
                         return reply.setText("This user does not exist");
