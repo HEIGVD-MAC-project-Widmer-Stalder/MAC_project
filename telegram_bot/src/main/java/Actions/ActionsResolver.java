@@ -1,5 +1,6 @@
 package Actions;
 
+import com.google.inject.internal.asm.$ClassVisitor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -44,8 +45,7 @@ public class ActionsResolver {
                     if (actionClass != null) {
                         action = (Action) actionClass.newInstance();
                     } else {
-                        reply.setText("Unknown action. Please refer to the bot commands list");
-                        reply.validate();
+                        action = (Action) IncorrectFunctionException.class.newInstance();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
