@@ -1,5 +1,6 @@
 package Actions;
 
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public class ActionsResolver {
 
     public static Action getAction(Message message) {
         Action action = null;
+        SendMessage reply =  new SendMessage().setChatId(message.getChatId());
 
         String s = message.getText();
         if (s.charAt(0) == '/') {
@@ -38,7 +40,12 @@ public class ActionsResolver {
             else {
                 try {
                     Class actionClass = actions.get(s);
-                    if(actionClass != null) action = (Action) actionClass.newInstance();
+                    // If the action class is not found, then it means the user entered an invalid command
+                    if (actionClass != null) {
+                        action = (Action) actionClass.newInstance();
+                    } else {
+                        reply.setText("Unknown action. Please refer to the bot commands list");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
