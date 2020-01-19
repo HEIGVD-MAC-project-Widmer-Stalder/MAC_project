@@ -43,7 +43,7 @@ public class MostPersonalContradictor extends Action {
                             "MATCH (other_user)-[lou2:LIKED]->(d2)\n" +
                             "WHERE user <> other_user AND lu2.coef = lou2.coef\n" +
                             "WITH other_user, COUNT(lou) AS unsim_likes , COUNT(lou2) AS sim_likes\n" +
-                            "WHERE unsim_likes >= 3 AND sim_likes > 0\n" +
+                            "WHERE unsim_likes >= 2 AND sim_likes > 0\n" +
                             "RETURN other_user, unsim_likes / sim_likes as dislikeness\n" +
                             "ORDER BY dislikeness", parameters("username", username));
                     // we put result in the reply and return it

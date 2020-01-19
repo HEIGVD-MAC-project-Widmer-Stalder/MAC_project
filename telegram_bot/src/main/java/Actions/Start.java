@@ -13,7 +13,10 @@ public class Start extends Action {
 
         User u = message.getFrom();
         Integer id = u.getId();
-        String username = u.getUserName();
+
+        // (sometimes username is null for some reason...)
+        String username = u.getUserName() != null ? u.getUserName() : u.getFirstName();
+        if(username == null) username = "unkown";
 
         try {
             Neo4jUtils.writingQuery("MERGE (user:User{telegramId: $id, username: $username})",
