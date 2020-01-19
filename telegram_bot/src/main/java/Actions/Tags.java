@@ -18,6 +18,7 @@ public class Tags extends Action {
                     "RETURN DISTINCT t.label, count(*)\n" +
                     "LIMIT 50");
             StringBuilder sb = new StringBuilder();
+            sb.append("Stored tags:\n");
             while (results.hasNext()){
                 Record r = results.next();
                 Value tagLabel = r.get(0);
