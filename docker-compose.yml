@@ -4,6 +4,7 @@ volumes:
   neo4j-data:
   neo4j-import:
   neo4j-plugins:
+  neo4j-logs:
 
 services:
   neo4j:
