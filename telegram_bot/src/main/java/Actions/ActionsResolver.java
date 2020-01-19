@@ -1,6 +1,9 @@
 package Actions;
 
-import com.google.inject.internal.asm.$ClassVisitor;
+import exceptions.IncorrectFunctionException;
+import exceptions.UnregisteredUserException;
+import graph_db.Neo4jUtils;
+import org.neo4j.driver.v1.StatementResult;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -43,7 +46,15 @@ public class ActionsResolver {
                     Class actionClass = actions.get(s);
                     // If the action class is not found, then it means the user entered an invalid command
                     if (actionClass != null) {
-                        action = (Action) actionClass.newInstance();
+                        // Ensure the user is registered (this check does not apply to the /start, of course)
+                        Integer id = message.getFrom().getId();
+                        StatementResult results = Neo4jUtils.readingQuery("MATCH (u:User {telegramId: " + id + "}) RETURN u LIMIT 1");
+                        if (!results.hasNext() && !s.equals("/start")) {
+                            action = (Action) UnregisteredUserException.class.newInstance();
+                        } else {
+                            action = (Action) actionClass.newInstance();
+                        }
+                    // If an incorrect function was called, display an error message
                     } else {
                         action = (Action) IncorrectFunctionException.class.newInstance();
                     }

@@ -2,6 +2,7 @@ package Actions;
 
 import graph_db.Neo4jUtils;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.neo4j.driver.v1.StatementResult;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -26,11 +27,17 @@ public class Add extends Action {
         else {
             // if the url is valid (not necessarily reachable though)
             if(urlValidator.isValid(s)) {
-                // try to add the document to the db
-                try{
-                    Neo4jUtils.writingQuery("CREATE (document1:Document {url: $url} )", parameters("url", s));
-                    setActionAsCompleted();
-                    return reply.setText("document was added");
+                try {
+                    // Ensure the document has not been already inserted into the DB
+                    StatementResult results = Neo4jUtils.readingQuery("MATCH (d:Document {url: '" + s + "'}) RETURN d LIMIT 1");
+                    if (results.hasNext()) {
+                        return reply.setText("Document already exists. Enter another URL or type /cancel to cancel the operation");
+                    // Add the document in the DB
+                    } else {
+                        Neo4jUtils.writingQuery("CREATE (document1:Document {url: $url} )", parameters("url", s));
+                        setActionAsCompleted();
+                        return reply.setText("document was added");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     setActionAsCompleted();

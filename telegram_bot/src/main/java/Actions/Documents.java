@@ -17,6 +17,7 @@ public class Documents extends Action {
                     "RETURN d\n" +
                     "LIMIT 50");
             StringBuilder sb = new StringBuilder();
+            sb.append("Stored documents:\n");
             while (results.hasNext()){
                 Value a = results.next().get("d");
                 Value b = a.get("url");
@@ -29,8 +30,8 @@ public class Documents extends Action {
         } catch (Exception e) {
             e.printStackTrace();
             setActionAsCompleted();
-            return reply.setText("an error occurred." +
-                    "we are sorry for the inconvenience.");
+            return reply.setText("An error occurred." +
+                    "We are sorry for the inconvenience.");
         }
     }
 }

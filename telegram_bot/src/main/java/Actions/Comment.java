@@ -2,6 +2,7 @@ package Actions;
 
 import graph_db.Neo4jUtils;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.neo4j.driver.v1.StatementResult;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -31,6 +32,18 @@ public class Comment extends Action {
             return reply.setText("enter the URL of the document");
         } else if (stage == Stages.WAITURL) {
             url = s;
+
+            try {
+                // Ensure the document has  been already inserted into the DB
+                StatementResult results = Neo4jUtils.readingQuery("MATCH (d:Document {url: '" + s + "'}) RETURN d LIMIT 1");
+                if (!results.hasNext()) {
+                    return reply.setText("Document does not exist. Enter the URL of an existing document URL " +
+                            "or type /cancel to cancel the operation. Add a new document by typing /add");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             if (!urlValidator.isValid(url)) {
                 return reply.setText("URL is not valid. Please enter again.");
             }
