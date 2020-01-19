@@ -45,6 +45,7 @@ public class ActionsResolver {
                         action = (Action) actionClass.newInstance();
                     } else {
                         reply.setText("Unknown action. Please refer to the bot commands list");
+                        reply.validate();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
