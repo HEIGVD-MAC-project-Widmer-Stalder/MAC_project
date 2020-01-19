@@ -17,7 +17,6 @@ public class ActionsResolver {
         // defines mapping between commands and actinos
         actions.put("/start", Start.class);
         actions.put("/add", Add.class);
-        actions.put("/simple_game", SimpleGame.class);
         actions.put("/like", Like.class);
         actions.put("/comment", Comment.class);
         actions.put("/tag", Tag.class);
