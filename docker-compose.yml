@@ -11,13 +11,14 @@ services:
     container_name: "neo4j"
     hostname: neo4j
     restart: always
-    ports:
-      - "7474:7474"
-      - "7687:7687"
+    #ports:
+    #  - "7474:7474"
+    #  - "7687:7687"
     environment:
       - NEO4J_AUTH="neo4j/test"
     volumes:
       - neo4j-data:/data
+      - neo4j-logs:/logs
       - neo4j-import:/var/lib/neo4j/import
       - neo4j-plugins:/plugins
   mongodb:
@@ -27,8 +28,8 @@ services:
       - MONGO_INITDB_DATABASE=docsdb
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=rootPassword
-    ports:
-      - 2017-2019:2017-2019
+    #ports:
+     # - 2017-2019:2017-2019
   bot:
     build:
       context: .
