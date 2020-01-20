@@ -192,4 +192,4 @@ MATCH (user:User{username: $username})-[lu1:LIKED]->(d:Document) MATCH (other_us
 ## Structure du code
 La structure du code est assez simple.
 La classe Main démarre, appelle la classe Bot, qui va lire les variables d'environnement liées au bot, et va tenter d'enregistrer le bot. En cas d'échec de l'enregistrement du bot, le bot s'arrête.
-Toutes les actions (inputs utilisateur) sont gérés par la classe Actions > ActionsResolver. Cette classe charge ensuite la classe correspondante (du package Actions ou exceptions) en fonction de l'input utilisateur.
+Toutes les actions (inputs utilisateur) sont gérés par les classes implémentant l'interface Action. La classe ActionsResolver permet de définir le mapping entre les commandes telegram et la classe correspondante (du package Actions ou exceptions) en fonction de l'input utilisateur.
