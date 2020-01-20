@@ -68,7 +68,7 @@ public class Like extends Action {
             try {
                 Neo4jUtils.writingQuery("MATCH (user1:User {telegramId: $id})\n" +
                                 "MERGE (document1:Document {url: $url})\n" +
-                                "CREATE (user1)-[:LIKED{coefficient: $coef}]->(document1)",
+                                "MERGE (user1)-[:LIKED{coef: $coef}]->(document1)",
                         parameters("id", message.getFrom().getId(), "url", url,
                                 "coef", coef));
                 setActionAsCompleted();

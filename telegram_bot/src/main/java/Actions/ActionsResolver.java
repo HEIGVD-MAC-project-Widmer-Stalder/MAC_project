@@ -29,11 +29,11 @@ public class ActionsResolver {
         actions.put("/most_frequent_contradictor", MostFrequentContradictor.class);
         actions.put("/most_personal_contradictor", MostPersonalContradictor.class);
         actions.put("/curious_fact1", CuriousFact1.class);
+        actions.put("/document", Document.class);
     }
 
     public static Action getAction(Message message) {
         Action action = null;
-        SendMessage reply =  new SendMessage().setChatId(message.getChatId());
 
         String s = message.getText();
         if (s.charAt(0) == '/') {
@@ -43,20 +43,7 @@ public class ActionsResolver {
             else {
                 try {
                     Class actionClass = actions.get(s);
-                    // If the action class is not found, then it means the user entered an invalid command
-                    if (actionClass != null) {
-                        // Ensure the user is registered (this check does not apply to the /start, of course)
-                        Integer id = message.getFrom().getId();
-                        StatementResult results = Neo4jUtils.readingQuery("MATCH (u:User {telegramId: " + id + "}) RETURN u LIMIT 1");
-                        if (!results.hasNext() && !s.equals("/start")) {
-                            action = (Action) UnregisteredUserException.class.newInstance();
-                        } else {
-                            action = (Action) actionClass.newInstance();
-                        }
-                    // If an incorrect function was called, display an error message
-                    } else {
-                        action = (Action) IncorrectFunctionException.class.newInstance();
-                    }
+                    if(actionClass != null) action = (Action) actionClass.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

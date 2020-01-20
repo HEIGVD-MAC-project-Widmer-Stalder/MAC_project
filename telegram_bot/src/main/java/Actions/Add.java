@@ -10,7 +10,7 @@ import static org.neo4j.driver.v1.Values.parameters;
 
 public class Add extends Action {
 
-    UrlValidator urlValidator = new UrlValidator();
+    private static UrlValidator urlValidator = new UrlValidator();
 
     public SendMessage processMessage(Message message) {
         SendMessage reply =  new SendMessage().setChatId(message.getChatId());

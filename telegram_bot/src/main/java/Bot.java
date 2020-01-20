@@ -1,6 +1,7 @@
 import Actions.Action;
 import Actions.ActionsResolver;
 import Actions.DefaultAction;
+import Actions.Start;
 import graph_db.Neo4jDriver;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -83,7 +84,9 @@ public class Bot extends TelegramLongPollingBot {
 
         // The processing of the reply is delegated to the current ongoing action
         Action currentAction = chatCurrentAction.get(message.getChatId());
-        currentAction = currentAction != null ? currentAction : DefaultAction.DefaultAction();
+        //currentAction = currentAction != null ? currentAction : DefaultAction.DefaultAction();
+        // if it is the first time we do an action, we do start
+        currentAction = currentAction != null ? currentAction : new Start();
         SendMessage reply = currentAction.processMessage(message);
         if (reply != null) {
             try {
