@@ -1,0 +1,41 @@
+version: '3'
+
+volumes:
+  neo4j-data:
+  neo4j-import:
+  neo4j-plugins:
+  neo4j-logs:
+
+services:
+  neo4j:
+    image: neo4j:latest 
+    container_name: "neo4j"
+    hostname: neo4j
+    restart: always
+    environment:
+      - NEO4J_AUTH=neo4j/test
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+      - neo4j-import:/var/lib/neo4j/import
+      - neo4j-plugins:/plugins
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=docsdb
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootPassword
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile-bot
+    container_name: bot
+    environment:
+      - TELEGRAM_BOT_USERNAME=${TELEGRAM_BOT_USERNAME}
+      - TELEGRAM_BOT_SECRET_TOKEN=${TELEGRAM_BOT_SECRET_TOKEN}
+      - NEO4J_HOST=${NEO4J_HOST}
+      - NEO4J_USER=${NEO4J_USER}
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD}
+    hostname: bot
+    restart: always

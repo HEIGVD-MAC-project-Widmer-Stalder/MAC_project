@@ -39,7 +39,7 @@ public class MostFrequentContradictor extends Action {
                     StatementResult sr = Neo4jUtils.writingQuery("MATCH (user:User{username:$username})-[lu:LIKED]->(d:Document)\n" +
                             "MATCH (other_user:User)-[lou:LIKED]->(d)\n" +
                             "WHERE lu.coef<>lou.coef\n" +
-                            "return other_user, count(other_user) as diff\n" +
+                            "RETURN other_user, count(other_user) AS diff\n" +
                             "ORDER BY diff", parameters("username", username));
                     // we put result in the reply and return it
                     StringBuilder sb = new StringBuilder();

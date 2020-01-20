@@ -1,8 +1,6 @@
 FROM maven:3.5-jdk-8 AS build  
 COPY telegram_bot/src /usr/src/app/src
 COPY telegram_bot/pom.xml /usr/src/app
-RUN echo "bot_username = ${BOT_USERNAME}" >> /usr/src/app/src/resources/telegram_bot.properties
-RUN echo "bot_secret_token = ${BOT_SECRET_TOKEN}" >> /usr/src/app/src/resources/telegram_bot.properties
 RUN mvn -f /usr/src/app/pom.xml clean package
 
 FROM gcr.io/distroless/java  

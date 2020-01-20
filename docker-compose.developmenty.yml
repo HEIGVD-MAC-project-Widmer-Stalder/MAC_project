@@ -29,18 +29,5 @@ services:
       - MONGO_INITDB_DATABASE=docsdb
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=rootPassword
-    #ports:
-    # - 2017-2019:2017-2019
-  bot:
-    build:
-      context: .
-      dockerfile: Dockerfile-bot
-    container_name: bot
-    hostname: bot
-    restart: always
-    volumes:
-      - ./telegram_bot:/app
-    environment:
-      - BOT_USERNAME="MAC_2019_BestBot"
-      - BOT_SECRET_TOKEN="1053463342:AAFbTV0bR5gDVL3AcWtZm1W9AZW5BHfrZb8"
-    working_dir: /app
+    ports:
+     - 2017-2019:2017-2019

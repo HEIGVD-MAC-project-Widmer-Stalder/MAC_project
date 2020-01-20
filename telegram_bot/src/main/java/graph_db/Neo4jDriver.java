@@ -17,23 +17,14 @@ public class Neo4jDriver {
 
     private static Driver driver = null;
 
-    private final static String propertyFileName = "neo4j.properties";
-
     //return a singleton driver
     public static Driver getDriver() throws Exception {
         if(driver == null) {
-            Properties prop = new Properties();
-            InputStream inputStream = Neo4jDriver.class.getClassLoader().getResourceAsStream(propertyFileName);
-            try {
-                prop.load(inputStream);
-            } catch (IOException e) {
-                throw new FileNotFoundException(propertyFileName + " file is missing");
-            }
-            String uri = prop.getProperty("uri");
-            String user = prop.getProperty("user");
-            String password = prop.getProperty("password");
+            String uri = "bolt://" + System.getenv("NEO4J_HOST") + ":7687";
+            String user = System.getenv("NEO4J_USER");
+            String password = System.getenv("NEO4J_PASSWORD");
             if(uri == null || user == null || password == null) {
-                throw new Exception("missing properties in " + propertyFileName + " (maybe a missing uri, user or password?)");
+                throw new Exception("Missing NEO4J_HOST, NEO4J_USER OR NEO4J_PASSWORD in environment variables");
             }
             driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password));
         }

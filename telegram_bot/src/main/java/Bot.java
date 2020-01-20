@@ -20,24 +20,14 @@ public class Bot extends TelegramLongPollingBot {
     // stores the ongoing action for each chat (Long is for chatId)
     private HashMap<Long, Action> chatCurrentAction = new HashMap<Long, Action>();
 
-    private final static String propertyFileName = "telegram_bot.properties";
-
     private String botUsername;
     private String botSecretToken;
 
     public Bot() throws Exception {
-        // Configure the bot according to properties files
-        Properties prop = new Properties();
-        InputStream inputStream = Bot.class.getClassLoader().getResourceAsStream(propertyFileName);
-        try {
-            prop.load(inputStream);
-        } catch (IOException e) {
-            throw new FileNotFoundException("telegram_bot.properties file is missing");
-        }
-        botUsername = prop.getProperty("bot_username");
-        botSecretToken = prop.getProperty("bot_secret_token");
+        botUsername = System.getenv("TELEGRAM_BOT_USERNAME");
+        botSecretToken = System.getenv("TELEGRAM_BOT_SECRET_TOKEN");
         if(botUsername == null || botSecretToken == null || botUsername.equals("") || botSecretToken.equals("")) {
-            throw new Exception("missing properties in " + propertyFileName + " (maybe a missing bot_username and bot_secret_token?)");
+            throw new Exception("Missing TELEGRAM_BOT_USERNAMA or TELEGRAM_BOT_SECRET_TOKEN in environment variables");
         }
     }
 
